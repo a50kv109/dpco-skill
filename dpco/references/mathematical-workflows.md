@@ -2,6 +2,8 @@
 
 Always discover capabilities and validate the task before requesting execution. Capability listings do not imply admission. Use rational values as strings when exact input is intended.
 
+These workflows describe operations in the published [DPCO V3 capability manifest](https://github.com/a50kv109/dpco-v3/blob/main/src/core/capabilityManifest.ts) and [MCP input contracts](https://github.com/a50kv109/dpco-v3/blob/main/src/integrations/mcp/contracts.ts). Check the live manifest before relying on an operation.
+
 ## Linear equation
 
 For `a*x + b = c`, use `solve_linear` with `{a,b,c}`. DPCO supports rational exact arithmetic and floating-point execution according to the executor admitted by Core. Inspect both execution and verification statuses.

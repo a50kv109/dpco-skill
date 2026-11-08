@@ -1,31 +1,61 @@
 # Installation and MCP Connection
 
+## Runtime dependency
+
+The Skill instructions live in this repository; the executable runtime is the separate [DPCO V3 Core repository](https://github.com/a50kv109/dpco-v3). Reading or installing the Skill does not fetch or run that project.
+
 ## Install the Skill
 
 Copy the `dpco/` directory to a skills location supported by the agent host. VS Code documents project skills under `.github/skills/dpco/`; a standalone skills repository may also be installed using host-specific mechanisms.
 
 Installing the Skill only supplies instructions. It does not install DPCO dependencies, make MCP tools appear, configure an MCP client, or start a DPCO server.
 
-## Configure local STDIO MCP
+## Obtain and prepare DPCO V3
 
-**Verified in DPCO V3 source:** `package.json` defines `npm run mcp`, which starts `src/integrations/mcp/server.ts`. That entry point constructs the existing default MCP Core and connects it to the SDK `StdioServerTransport`.
+The published DPCO V3 repository documents Node.js 20.19+ and npm. With user authorization, clone the repository and install its dependencies:
 
-Requirements are Node.js 20+ and the DPCO project dependencies installed. Configure the MCP client using its own documented format. The DPCO V3 source repository includes an example at `examples/mcp-client-config.json`; its absolute `cwd` is machine-specific and must be replaced on another computer.
+```sh
+git clone https://github.com/a50kv109/dpco-v3.git
+cd dpco-v3
+npm install
+```
+
+Run commands from the cloned project root. Installation does not grant any executor admission; the default production policy remains fail-closed.
+
+## Configure the published local STDIO MCP server
+
+The public `main` branch defines `npm run mcp`, starting `src/integrations/mcp/server.ts` and connecting the default DPCO Core to the SDK's `StdioServerTransport`. The project-level references are [the MCP integration guide](https://github.com/a50kv109/dpco-v3/blob/main/docs/MCP_INTEGRATION.md), [the server entry point](https://github.com/a50kv109/dpco-v3/blob/main/src/integrations/mcp/server.ts), and [the MCP adapter](https://github.com/a50kv109/dpco-v3/blob/main/src/integrations/mcp/adapter.ts).
+
+Configure the agent host's MCP client using its own supported configuration format. The DPCO V3 example uses this shape; replace the placeholder with the absolute path to the checkout:
+
+```json
+{
+  "servers": {
+    "dpco-v3": {
+      "type": "stdio",
+      "command": "npm",
+      "args": ["run", "mcp"],
+      "cwd": "/absolute/path/to/dpco-v3"
+    }
+  }
+}
+```
 
 The server process must be running under the client. A Skill cannot start it unless the host separately provides and authorizes that execution.
 
-## Optional local Streamable HTTP
+## Streamable HTTP status
 
-DPCO V3 also provides `npm run mcp:http` at `http://127.0.0.1:3000/mcp` by default. This is only a local protocol-validation alternative. It binds to loopback, has no OAuth or client authentication, and must not be exposed through a tunnel or public network. Further implementation details are in `docs/MCP_HTTP_LOCAL.md` in the DPCO V3 checkout.
+As of the current published `dpco-v3/main`, Streamable HTTP is **not included**: its `http_server.ts`, `mcp:http` script, and local HTTP testing guide are absent from that branch. A separate local DPCO V3 working copy contains an unpublished development implementation bound to `127.0.0.1`; it has no OAuth or client authentication and must not be exposed through a tunnel or public network. Do not expect the public clone steps above to provide HTTP.
 
-Remote Streamable HTTP hosting, OAuth, and Gemini deployment are not implemented. Do not provide a public endpoint or credentials based on these local instructions.
+Remote Streamable HTTP hosting, OAuth, and Gemini deployment are not implemented in the published repository. Do not provide a public endpoint or credentials based on these local instructions.
 
 ## Verify connection
 
 1. Confirm the MCP client reports the server connected.
-2. Call `dpco_list_capabilities` and inspect the actual response.
-3. Call `dpco_validate_task` with a supported request.
-4. Do not assume execution is admitted; inspect `executionEligible` and `blockedReason`.
-5. If execution is admitted and requested, call `dpco_execute_task` and interpret the returned statuses as described in [verification semantics](./verification-semantics.md).
+2. Confirm the four DPCO tool names are exposed.
+3. Call `dpco_list_capabilities` and inspect the actual response.
+4. Call `dpco_validate_task` with a supported request.
+5. Do not assume execution is admitted; inspect `executionEligible` and `blockedReason`.
+6. If execution is admitted and requested, call `dpco_execute_task` and interpret the returned statuses as described in [verification semantics](./verification-semantics.md).
 
 If tools cannot be called, report that DPCO MCP is unavailable. Do not substitute invented responses.

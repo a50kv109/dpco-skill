@@ -31,9 +31,10 @@ The adapter passes a normal production-mode task to `DPCOCore.processTask`. The 
 
 ## Transports
 
-DPCO V3 currently includes:
+The published [`dpco-v3/main`](https://github.com/a50kv109/dpco-v3) includes:
 
-- Local STDIO MCP: `npm run mcp`.
-- Local Streamable HTTP MCP: `npm run mcp:http`, bound to `127.0.0.1`; this is for local protocol validation only.
+- Local STDIO MCP: `npm run mcp`, implemented in [the server entry point](https://github.com/a50kv109/dpco-v3/blob/main/src/integrations/mcp/server.ts).
 
-Neither transport automatically becomes available just by installing the Skill. Remote hosting, OAuth, and public networking are not implemented.
+The Streamable HTTP adapter exists only in a separate local DPCO V3 development checkout and is not included in the public `main` branch. It binds to `127.0.0.1`; it is not a public remote service.
+
+The Skill does not automatically configure either transport. Remote hosting, OAuth, and public networking are not implemented. See [the DPCO V3 architecture](https://github.com/a50kv109/dpco-v3/blob/main/docs/DPCO_V3_ARCHITECTURE.md) and [installation instructions](./installation.md).

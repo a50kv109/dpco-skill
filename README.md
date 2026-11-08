@@ -1,6 +1,8 @@
 # DPCO Agent Skill
 
-DPCO Agent Skill is a portable set of instructions that teaches a compatible AI agent how to use the existing DPCO V3 MCP tools for supported math and 2D geometry tasks.
+DPCO Agent Skill is a portable set of instructions that teaches a compatible AI agent how to use DPCO V3 for supported mathematical and 2D geometry tasks.
+
+> **Execution requires the separate [DPCO V3 Core repository](https://github.com/a50kv109/dpco-v3).** This repository contains the Skill and its documentation, not the executable engine or MCP server.
 
 ## The layers
 
@@ -9,7 +11,7 @@ DPCO Agent Skill is a portable set of instructions that teaches a compatible AI 
 - **DPCO Core:** task validation, admission, executor dispatch, independent verification, and ledger recording.
 - **AI Agent:** interprets the user's request, prepares a task, calls available tools, and explains the result.
 
-Installing this Skill does not install DPCO V3, expose MCP tools, configure a client, or start a server. A compatible agent host must support the Agent Skills format, and the DPCO MCP server must be separately configured and running.
+Installing this Skill does not install DPCO V3, expose MCP tools, configure a client, or start a server. A compatible agent host must support the Agent Skills format, and the DPCO MCP server must be separately installed, configured, and running.
 
 ## Supported task families
 
@@ -36,7 +38,32 @@ The agent must query `dpco_list_capabilities` at runtime. Registered or implemen
 
 Read [SKILL.md](./dpco/SKILL.md), then install the [`dpco/`](./dpco/) directory in an Agent Skills location supported by the host. For example, VS Code documents workspace skills under `.github/skills/<name>/`; other hosts may use different installation paths and behavior.
 
-For DPCO startup and client setup, see [installation.md](./dpco/references/installation.md). For task and response contracts, see [tool-reference.md](./dpco/references/tool-reference.md).
+For DPCO setup and MCP connection, follow [installation.md](./dpco/references/installation.md). The installation steps do not run automatically.
+
+## Relationship to DPCO V3
+
+- **`dpco-skill`** contains portable agent instructions and reference documentation.
+- **[`dpco-v3`](https://github.com/a50kv109/dpco-v3)** contains the executable core and the MCP integration published on its `main` branch.
+- The repositories are independent. This Skill links to DPCO V3 but does not copy its implementation; changes in the Core may require documentation updates here.
+
+The Core validates and admits a task, dispatches an executor, independently checks the result, and records the outcome:
+
+`Admission → Executor → IndependentVerifier → Ledger`
+
+The verifier has documented common-mode arithmetic risk; a `VERIFIED` response is bounded by the operation-specific check and is not a universal proof.
+
+### Quick navigation
+
+- [Original DPCO V3 Core repository](https://github.com/a50kv109/dpco-v3)
+- [DPCO V3 README](https://github.com/a50kv109/dpco-v3/blob/main/README.md)
+- [Architecture](https://github.com/a50kv109/dpco-v3/blob/main/docs/DPCO_V3_ARCHITECTURE.md)
+- [MCP integration](https://github.com/a50kv109/dpco-v3/blob/main/docs/MCP_INTEGRATION.md)
+- [MCP security](https://github.com/a50kv109/dpco-v3/blob/main/docs/MCP_SECURITY.md)
+- [Capability manifest](https://github.com/a50kv109/dpco-v3/blob/main/src/core/capabilityManifest.ts)
+- [Agent Skills specification](https://agentskills.io/specification)
+- [Skill installation guide](./dpco/references/installation.md)
+
+For a guided overview of the Core, see [DPCO V3 project overview](./dpco/references/dpco-project-overview.md).
 
 ## Compatibility status
 

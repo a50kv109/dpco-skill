@@ -2,6 +2,8 @@
 
 Always report execution outcome and verification outcome separately. Use the actual MCP response, not an inferred or fabricated result.
 
+The status mapping follows the published [DPCO Core models](https://github.com/a50kv109/dpco-v3/blob/main/src/core/models.ts), [verifier](https://github.com/a50kv109/dpco-v3/blob/main/src/core/verifier.ts), and [MCP response contract](https://github.com/a50kv109/dpco-v3/blob/main/src/integrations/mcp/contracts.ts).
+
 ## Execution statuses
 
 - **`SUCCESS`**: Core reports successful execution. This does not by itself mean the mathematical result is verified; inspect `verificationStatus`.

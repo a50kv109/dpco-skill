@@ -1,6 +1,6 @@
 # DPCO MCP Tool Reference
 
-This reference reflects `src/integrations/mcp/contracts.ts` and `src/integrations/mcp/adapter.ts`. The MCP client returns tool content and, when supported, `structuredContent`; inspect the actual response rather than assuming a tool succeeded.
+This reference reflects the published [MCP contracts](https://github.com/a50kv109/dpco-v3/blob/main/src/integrations/mcp/contracts.ts) and [adapter](https://github.com/a50kv109/dpco-v3/blob/main/src/integrations/mcp/adapter.ts). The MCP client returns tool content and, when supported, `structuredContent`; inspect the actual response rather than assuming a tool succeeded. The public DPCO V3 `main` branch currently provides STDIO; the local unpublished HTTP development version returns `streamable-http` in the transport field.
 
 ## 1. `dpco_list_capabilities`
 
@@ -51,7 +51,7 @@ Validation does not execute the task or change Admission state.
 
 **Output:** `{ "found": boolean, "taskId": string, "record": ledger-record-or-null }`.
 
-It looks up the latest matching task ID in the current Core/Ledger. On HTTP, each MCP session has a separate Core/Ledger; STDIO uses its process's Core. Results do not survive restart.
+It looks up the latest matching task ID in the current Core/Ledger. In the local unpublished HTTP development version, each MCP session has a separate Core/Ledger; public STDIO uses its process's Core. Results do not survive restart.
 
 ## Operation parameter shapes
 

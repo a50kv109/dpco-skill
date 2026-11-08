@@ -6,7 +6,15 @@ license: MIT
 
 # DPCO Agent Skill
 
-Use DPCO as a constrained mathematical execution and verification service. This Skill provides instructions; it does not install DPCO, start its MCP server, or create MCP tools.
+Use DPCO as a constrained mathematical execution and verification service. This Skill provides instructions; it is not the engine and does not install DPCO, start its MCP server, or create MCP tools.
+
+## DPCO Runtime Dependency
+
+Real DPCO execution requires the separate [DPCO V3 Core repository](https://github.com/a50kv109/dpco-v3), its Node.js runtime and installed dependencies, and a compatible agent host configured to connect to its MCP server. The published DPCO V3 `main` branch supports local STDIO MCP. The Skill cannot create that connection by linking to or reading the GitHub repository.
+
+If the MCP tools are unavailable, tell the user that DPCO is not connected and direct them to [the DPCO installation and connection guide](./references/installation.md). Do not clone the project, install packages, edit host configuration, or start a server unless the user and host explicitly authorize those actions.
+
+The DPCO MCP interface exposes four tools: `dpco_list_capabilities`, `dpco_validate_task`, `dpco_execute_task`, and `dpco_get_result`. Once connected, discover live capabilities and follow their actual schemas; a registered capability does not imply production admission. See [the tool reference](./references/tool-reference.md).
 
 ## Activate when
 
@@ -19,12 +27,13 @@ Do not claim 3D geometry, nonlinear algebra, arbitrary symbolic computation, geo
 ## Procedure
 
 1. Understand the user's problem and translate it into a precise DPCO operation and parameters. Preserve exact values as strings when appropriate.
-2. Call `dpco_list_capabilities`. Confirm the requested operation is registered and inspect its status and admission requirement.
-3. Call `dpco_validate_task` with the proposed task. Inspect `valid`, `executionEligible`, `compatibleExecutors`, `blockedReason`, and `issues`.
-4. Execute only if the task is valid and eligible under DPCO's current admission policy. Otherwise report the validation or admission blocker; never try to bypass it.
-5. Call `dpco_execute_task` and use its actual response. If a later lookup is needed, call `dpco_get_result` with the same task ID in the same MCP server process/session.
-6. Report execution status separately from verification status. Mention evidence IDs and limitations when returned. Never claim a result was verified unless DPCO reports `verificationStatus: "VERIFIED"`.
-7. Explain the result and remaining mathematical limits to the user. DPCO results support, but do not replace, a clear explanation.
+2. Confirm that DPCO MCP tools are available. If not, explain the runtime dependency and refer to [installation instructions](./references/installation.md); GitHub access alone is not a runtime connection.
+3. Call `dpco_list_capabilities`. Confirm the requested operation is registered and inspect its status and admission requirement.
+4. Call `dpco_validate_task` with the proposed task. Inspect `valid`, `executionEligible`, `compatibleExecutors`, `blockedReason`, and `issues`.
+5. Execute only if the task is valid and eligible under DPCO's current admission policy. Otherwise report the validation or admission blocker; never try to bypass it.
+6. Call `dpco_execute_task` and use its actual response. If a later lookup is needed, call `dpco_get_result` with the same task ID in the same MCP server process/session.
+7. Report execution status separately from verification status. Mention evidence IDs and limitations when returned. Never claim a result was verified unless DPCO reports `verificationStatus: "VERIFIED"`.
+8. Explain the result and remaining mathematical limits to the user. DPCO results support, but do not replace, a clear explanation.
 
 Read [tool-reference.md](./references/tool-reference.md) before constructing unfamiliar calls, and [verification-semantics.md](./references/verification-semantics.md) before interpreting statuses.
 
@@ -40,6 +49,10 @@ Read [tool-reference.md](./references/tool-reference.md) before constructing unf
 
 For task schemas, workflows, and setup, see:
 
+- [DPCO V3 project overview](./references/dpco-project-overview.md)
+- [DPCO V3 capability catalogue](./references/dpco-capabilities.md)
+- [DPCO MCP integration](./references/dpco-mcp-integration.md)
+- [DPCO verification model](./references/dpco-verification-model.md)
 - [Architecture](./references/architecture.md)
 - [Tool reference](./references/tool-reference.md)
 - [Mathematical workflows](./references/mathematical-workflows.md)
